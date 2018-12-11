@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contact;
+use App\Http\Requests\ContactRequest;
 use Illuminate\Http\Request;
 
 class ContactsController extends Controller
@@ -22,20 +23,20 @@ class ContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    
+    public function store(ContactRequest /* Request */$request)
     {
-        //
-    }
+        // first way to validate
+        // $this->validate(
+        //     $request,
+        //     [
+        //         'first_name'=>'requred',
+        //         'last_name'=>'requred',
+        //         'email'=>'requred | unique:contacts,email'
+        //     ]
+        // );
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return Contact ::create($request->only(['first_name', 'last_name', 'email']));
     }
 
     /**
@@ -46,7 +47,9 @@ class ContactsController extends Controller
      */
     public function show(Contact $contact)
     {
-        //
+        // return Contact::findOrFail(); // jednostavnije je nacin dole
+        return $contact;
+
     }
 
     /**
@@ -55,21 +58,12 @@ class ContactsController extends Controller
      * @param  \App\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function edit(Contact $contact)
+   
+     
+    public function update(ContactRequest $request, Contact $contact)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Contact  $contact
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Contact $contact)
-    {
-        //
+         $contact->update($request->only(['first_name', 'last_name', 'email']));
+         return $contact;
     }
 
     /**
@@ -80,6 +74,7 @@ class ContactsController extends Controller
      */
     public function destroy(Contact $contact)
     {
-        //
+        $contact->delete();
+        return $contact;
     }
 }
